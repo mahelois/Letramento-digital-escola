@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Base dos Detetives da Informação</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&family=Nunito:wght@500;700&display=swap">
+<style>
+:root{--bg:#eaf1fb;--card:#fff;--ink:#1b2a4e;--mute:#55627f;--line:#c9d6ec;--gold:#ffc93c;--navy:#1b2a4e;--ok:#14876f;--okbg:#d8f3ec;--warn:#a85d00;--warnbg:#ffecc7;--bad:#c4372a;--badbg:#ffdcd6;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#111a33;--card:#1a2646;--ink:#eef2fc;--mute:#a7b3d1;--line:#32426b;--okbg:#10372f;--warnbg:#3d2c0a;--badbg:#451c18;--ok:#5fd6b8;--warn:#ffc363;--bad:#ff8f80;--navy:#0a1124;color-scheme:dark}}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font:500 18px/1.55 Nunito,system-ui,sans-serif}
+h1,h2,h3,button,.chip{font-family:Fredoka,system-ui,sans-serif}
+h2{font-size:1.9rem;line-height:1.15;margin:0 0 .3em}h3{font-size:1.25rem;margin:.2em 0}
+p{margin:.4em 0}
+.hero{position:relative;background:#14204a;color:#fff;overflow:hidden;padding:44px 20px 36px;--x:72%;--y:45%;touch-action:pan-y}
+.hero .lay{position:absolute;inset:0;pointer-events:none;color:var(--gold);font:700 1.5rem Fredoka,sans-serif;-webkit-mask-image:radial-gradient(circle 110px at var(--x) var(--y),#000 30%,transparent 100%);mask-image:radial-gradient(circle 110px at var(--x) var(--y),#000 30%,transparent 100%)}
+.lay span{position:absolute}
+.hero .in{position:relative;max-width:700px;margin:0 auto}
+.hero h1{font-size:clamp(2.2rem,8vw,3.6rem);line-height:1.05;margin:.1em 0 .3em}
+.hero p{font-size:1.15rem;max-width:34ch}
+.hint{opacity:.7;font-size:.9rem}
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--navy);display:flex;gap:6px;overflow-x:auto;padding:8px 12px;scrollbar-width:thin}
+nav button{flex:none;border:2px solid transparent;background:transparent;color:#dfe7fb;font-size:1rem;font-weight:500;padding:8px 14px;border-radius:999px;cursor:pointer;min-height:44px;white-space:nowrap}
+nav button[aria-selected=true]{background:var(--gold);color:#1b2a4e;font-weight:700}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+main{max-width:720px;margin:0 auto;padding:22px 16px 60px}
+.panel{display:none}.panel.on{display:block;animation:in .35s ease}
+@keyframes in{from{opacity:0;transform:translateY(8px)}}
+.card{background:var(--card);border:2px solid var(--line);border-radius:20px;padding:18px;margin:14px 0}
+.big{font-size:3rem;line-height:1}
+.grid{display:grid;gap:12px}
+@media(min-width:560px){.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}}
+.btn{font-weight:700;font-size:1.05rem;border:0;border-radius:14px;padding:11px 18px;background:var(--gold);color:#1b2a4e;cursor:pointer;min-height:46px}
+.chip{display:inline-block;border-radius:999px;padding:4px 14px;margin:3px;border:2px solid var(--line);font-weight:700}
+.chip.on{background:var(--okbg);border-color:var(--ok);color:var(--ok)}
+.chip.off{opacity:.55}
+input[type=range]{width:100%;accent-color:var(--ok);height:40px}
+.sit{display:grid;gap:8px;margin-top:8px}
+.sit .row{display:flex;gap:8px;flex-wrap:wrap}
+.v{flex:1;min-width:90px;border:3px solid;border-radius:12px;background:var(--card);font-weight:700;padding:10px;cursor:pointer;min-height:46px}
+.v.ok{border-color:var(--ok);color:var(--ok)}.v.warn{border-color:var(--warn);color:var(--warn)}.v.bad{border-color:var(--bad);color:var(--bad)}
+.res{border-radius:12px;padding:10px 14px;margin-top:8px}.res.r{background:var(--okbg)}.res.w{background:var(--badbg)}
+.chk{display:flex;gap:10px;align-items:center;padding:8px 0;cursor:pointer}
+.chk input{width:26px;height:26px;accent-color:var(--ok);flex:none}
+.meter{height:16px;border-radius:9px;background:var(--line);overflow:hidden;margin:8px 0}
+.meter i{display:block;height:100%;width:0;background:var(--bad);transition:width .4s,background .4s}
+.flip{width:100%;text-align:left;font:inherit;color:inherit;background:var(--card);border:2px dashed var(--mute);border-radius:16px;padding:14px;cursor:pointer;min-height:90px}
+.flip.open{border-style:solid;border-color:var(--ok);background:var(--okbg)}
+.two{display:grid;gap:12px}
+@media(min-width:560px){.two{grid-template-columns:1fr 1fr}}
+.good{border-color:var(--ok)}.meh{border-color:var(--warn)}
+.cert{border:6px double var(--gold);border-radius:18px;text-align:center;padding:24px 14px;margin-top:14px;background:var(--card)}
+.cert .nm{font:700 2rem Fredoka,sans-serif;word-break:break-word}
+input[type=text]{font:inherit;width:100%;padding:12px;border:2px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink)}
+a{color:inherit;font-weight:700}
+.hidden{display:none!important}
+@media print{body *{visibility:hidden}#cert,#cert *{visibility:visible}#cert{position:absolute;left:0;top:0;width:100%}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header class="hero" id="hero">
+  <div class="lay" aria-hidden="true"><span style="left:6%;top:20%">senha?</span><span style="left:30%;top:68%">idade</span><span style="left:55%;top:14%">fonte?</span><span style="left:74%;top:60%">foto</span><span style="left:84%;top:25%">fake!</span><span style="left:12%;top:48%">IA</span><span style="left:44%;top:40%">pause</span><span style="left:66%;top:84%">dados</span></div>
+  <div class="in">
+    <div class="big" aria-hidden="true">🕵️</div>
+    <h1>Base dos Detetives da Informação</h1>
+    <p>A internet tem pistas escondidas por todo lado. Bora aprender a ler todas elas?</p>
+    <p class="hint">Mova o dedo ou o mouse aqui para usar a lupa 🔍</p>
+  </div>
+</header>
+<nav id="nav" role="tablist" aria-label="Salas da base"></nav>
+<main>
+
+<section class="panel" id="inicio" data-t="🏠 Início">
+  <h2>Sua missão, detetive</h2>
+  <p>Hoje a gente joga, assiste, conversa e pesquisa na internet. É muito legal, e também tem armadilhas. Detetives bons <b>investigam antes de confiar</b>.</p>
+  <div class="grid g2">
+    <div class="card"><div class="big">🎮</div><h3>Jogos e idade</h3><p>Por que as faixas etárias existem.</p></div>
+    <div class="card"><div class="big">💬</div><h3>Grupos e fotos</h3><p>Respeito e cuidado com os outros.</p></div>
+    <div class="card"><div class="big">🔎</div><h3>Fontes</h3><p>Como descobrir o que é verdade.</p></div>
+    <div class="card"><div class="big">🤖</div><h3>Inteligência artificial</h3><p>Ajudante, não substituta.</p></div>
+  </div>
+  <p>Passe pelas salas no menu lá em cima. No fim, você ganha seu <b>certificado</b>.</p>
+  <p>Quer treinar jogando? Tente também o <a href="https://beinternetawesome.withgoogle.com/pt-br_br/interland" target="_blank" rel="noopener">Interland, do Google</a>, um jogo sobre segurança na internet.</p>
+  <button class="btn" data-go="idade">Começar a investigação</button>
+</section>
+
+<section class="panel" id="idade" data-t="🎮 Jogos e idade">
+  <h2>Por que existe idade para jogar?</h2>
+  <p>Jogos, filmes e séries têm uma <b>classificação indicativa</b>. Ela avisa se há violência, assuntos pesados ou chats com desconhecidos. Não é para atrapalhar a diversão. É para proteger você.</p>
+  <div class="card">
+    <h3>Descubra o que combina com você</h3>
+    <label for="age">Idade: <b id="ageV">10</b> anos</label>
+    <input type="range" id="age" min="6" max="17" value="10">
+    <div id="cls"></div>
+    <p id="clsMsg"></p>
+  </div>
+  <div class="card"><h3>E se eu mentir a idade?</h3>
+    <div class="grid g3">
+      <div>🔓 Libera chats e conteúdos de gente mais velha.</div>
+      <div>🎭 Estranhos acham que você é adulto, e você fica menos protegido.</div>
+      <div>⚖️ Uma lei brasileira recente, o <b>ECA Digital</b>, cobra mais cuidado das plataformas com crianças.</div>
+    </div>
+  </div>
+  <p><b>Combinado de detetive:</b> crie contas junto com seus responsáveis, com a sua idade verdadeira.</p>
+</section>
+
+<section class="panel" id="grupos" data-t="💬 Grupos e fotos">
+  <h2>Grupos, fotos e respeito</h2>
+  <p>No WhatsApp e no Instagram, o que você manda <b>não volta mais</b>. Qualquer pessoa pode salvar e repassar.</p>
+  <div class="card"><h3>Antes de postar uma foto, pergunte:</h3>
+    <p>👤 Quem aparece nela concordou?<br>📍 Ela mostra onde moro ou estudo?<br>😬 Eu gostaria que fizessem isso comigo?</p></div>
+  <h3>Treino: qual é o semáforo?</h3>
+  <div id="sem"></div>
+</section>
+
+<section class="panel" id="fontes" data-t="🔎 Fontes">
+  <h2>A ficha do detetive</h2>
+  <p>Vai fazer um trabalho? Antes de copiar, investigue o site. Marque o que você encontrou:</p>
+  <div class="card" id="ficha">
+    <label class="chk"><input type="checkbox"> Tem o nome de quem escreveu</label>
+    <label class="chk"><input type="checkbox"> Tem a data da publicação</label>
+    <label class="chk"><input type="checkbox"> Mostra de onde veio a informação</label>
+    <label class="chk"><input type="checkbox"> Outros sites confiáveis dizem a mesma coisa</label>
+    <label class="chk"><input type="checkbox"> Não usa pressa nem susto (“compartilhe já!”)</label>
+    <div class="meter"><i id="mt"></i></div>
+    <p id="mtMsg"><b>Nível de confiança:</b> marque as pistas.</p>
+  </div>
+  <p>💡 <b>Dica:</b> se só um site fala algo incrível, desconfie. Pergunte a um professor ou bibliotecário.</p>
+</section>
+
+<section class="panel" id="ia" data-t="🤖 IA">
+  <h2>IA: ajudante ou muleta?</h2>
+  <p>A inteligência artificial responde rápido, mas rápido <b>não significa certo</b>. Ela pode inventar informações e escrever com muita confiança.</p>
+  <div class="two">
+    <div class="card good"><h3>✅ Ajudante</h3><p>Explicar de outro jeito.<br>Dar ideias para começar.<br>Corrigir o que você escreveu.<br>Depois você confere em outra fonte.</p></div>
+    <div class="card meh"><h3>⚠️ Muleta</h3><p>Pedir o trabalho pronto.<br>Copiar sem ler.<br>Acreditar em tudo.<br>Desistir de pensar.</p></div>
+  </div>
+  <div class="card"><h3>Seu método em 4 passos</h3><p>1️⃣ Tente pensar primeiro.<br>2️⃣ Pergunte à IA com clareza.<br>3️⃣ Confira em livros ou sites confiáveis.<br>4️⃣ Escreva com as suas palavras.</p></div>
+  <p>⭐ Vocês já são craques em <b>edição de vídeo</b> e <b>programação</b>. Isso exige criatividade, algo que a IA não faz por você!</p>
+</section>
+
+<section class="panel" id="planeta" data-t="🌍 Planeta">
+  <h2>A IA e o meio ambiente</h2>
+  <p>Cada pergunta feita a uma IA é processada em computadores gigantes, os <b>centros de dados</b>. Eles usam energia e água para funcionar e para esfriar. Uma pergunta gasta pouco, mas milhões de pessoas perguntando gastam muito.</p>
+  <h3>Toque nos pedidos e veja a dica</h3>
+  <div class="grid g2" id="eco"></div>
+</section>
+
+<section class="panel" id="final" data-t="🏅 Certificado">
+  <h2>Hora do compromisso</h2>
+  <p>Marque os combinados que você promete cumprir:</p>
+  <div class="card" id="prom">
+    <label class="chk"><input type="checkbox"> Vou usar minha idade verdadeira e combinar tudo com meus responsáveis.</label>
+    <label class="chk"><input type="checkbox"> Vou pedir permissão antes de postar fotos de alguém.</label>
+    <label class="chk"><input type="checkbox"> Vou investigar as fontes antes de copiar ou repassar.</label>
+    <label class="chk"><input type="checkbox"> Vou usar a IA como ajudante, sem esquecer de pensar.</label>
+  </div>
+  <label for="nome"><b>Seu nome:</b></label>
+  <input type="text" id="nome" maxlength="40" autocomplete="off" placeholder="Digite seu nome">
+  <p><button class="btn" id="mk">Gerar meu certificado</button></p>
+  <div class="cert hidden" id="cert">
+    <div class="big">🏅</div>
+    <p>Certificamos que</p>
+    <div class="nm" id="cn"></div>
+    <p>é oficialmente <b>Detetive da Informação</b> e prometeu investigar, respeitar e proteger.</p>
+    <button class="btn" onclick="window.print()">Imprimir</button>
+  </div>
+</section>
+</main>
+<script>
+var $=function(x){return document.getElementById(x)};
+var panels=[].slice.call(document.querySelectorAll(".panel")),nav=$("nav");
+panels.forEach(function(p){var b=document.createElement("button");b.setAttribute("role","tab");b.textContent=p.getAttribute("data-t");b.dataset.id=p.id;b.onclick=function(){go(p.id)};nav.appendChild(b)});
+function go(id,skip){if(!$(id))id="inicio";panels.forEach(function(p){p.classList.toggle("on",p.id===id)});
+[].forEach.call(nav.children,function(b){var on=b.dataset.id===id;b.setAttribute("aria-selected",on);if(on)b.scrollIntoView({inline:"center",block:"nearest"})});
+if(!skip){try{history.replaceState(null,"","#"+id)}catch(e){location.hash=id}window.scrollTo({top:$("hero").offsetHeight-20})}}
+[].forEach.call(document.querySelectorAll("[data-go]"),function(b){b.onclick=function(){go(b.dataset.go)}});
+window.addEventListener("hashchange",function(){go(location.hash.slice(1),true)});
+go(location.hash.slice(1)||"inicio",true);
+var h=$("hero");h.addEventListener("pointermove",function(e){var r=h.getBoundingClientRect();h.style.setProperty("--x",(e.clientX-r.left)+"px");h.style.setProperty("--y",(e.clientY-r.top)+"px")});
+/* classificação */
+var C=[["L",0],["10",10],["12",12],["14",14],["16",16],["18",18]];
+function cls(){var a=+$("age").value;$("ageV").textContent=a;
+$("cls").innerHTML=C.map(function(c){var ok=a>=c[1];return '<span class="chip '+(ok?"on":"off")+'">'+(ok?"✅ ":"🔒 ")+c[0]+'</span>'}).join("");
+var next=C.filter(function(c){return c[1]>a})[0];
+$("clsMsg").textContent=next?"Com "+a+" anos, o seu nível é até "+C.filter(function(c){return c[1]<=a}).pop()[0]+". Os níveis com 🔒 ainda não são para você. Quando ficar em dúvida, pergunte a um adulto.":"Você já alcançou todos os níveis, mas continue escolhendo com cuidado!"}
+$("age").oninput=cls;cls();
+/* semáforo */
+var S=[["Um desconhecido adiciona você num grupo e pede fotos.","bad","Perigo! Saia do grupo e avise um adulto."],["Você pergunta ao colega se pode postar a foto dele.","ok","Tudo certo! Respeitar é o caminho."],["Seu amigo posta uma foto sua com careta, sem avisar.","warn","Atenção! Peça para apagar. Foto sem permissão não vale."]];
+var V={ok:"✅ Verde",warn:"⚠️ Amarelo",bad:"🚫 Vermelho"};
+$("sem").innerHTML=S.map(function(s,i){return '<div class="card sit" data-i="'+i+'"><p>'+s[0]+'</p><div class="row"><button class="v ok" data-v="ok">'+V.ok+'</button><button class="v warn" data-v="warn">'+V.warn+'</button><button class="v bad" data-v="bad">'+V.bad+'</button></div><div class="res hidden"></div></div>'}).join("");
+[].forEach.call(document.querySelectorAll(".sit .v"),function(b){b.onclick=function(){var c=b.closest(".sit"),s=S[c.dataset.i],r=c.querySelector(".res"),ok=b.dataset.v===s[1];r.className="res "+(ok?"r":"w");r.textContent=(ok?"Acertou! ":"Quase! O certo era "+V[s[1]]+". ")+s[2]}});
+/* ficha */
+var F=[].slice.call(document.querySelectorAll("#ficha input"));
+F.forEach(function(c){c.onchange=function(){var n=F.filter(function(x){return x.checked}).length;$("mt").style.width=n*20+"%";$("mt").style.background=n>=4?"var(--ok)":n>=2?"var(--warn)":"var(--bad)";
+$("mtMsg").innerHTML="<b>Nível de confiança:</b> "+(n===0?"marque as pistas.":n<=1?"baixo. Cuidado, não use ainda!":n<=3?"médio. Procure mais pistas.":"alto! Esse site parece confiável.")}});
+/* eco */
+var E=[["“Qual a capital da França?”","Dá para achar em um atlas ou na busca comum, gastando bem menos energia."],["“Me explique frações de outro jeito.”","Ótimo uso! Aprender é um bom motivo para usar IA."],["Pedir 20 vezes a mesma imagem só por diversão","Pense antes: cada pedido usa energia. Que tal criar uma só e caprichar?"],["“Escreva meu trabalho inteiro.”","Gasta recursos e você não aprende. Faça um rascunho seu primeiro."]];
+$("eco").innerHTML=E.map(function(e){return '<button class="flip">'+e[0]+'<br><span class="hidden">💡 '+e[1]+'</span></button>'}).join("");
+[].forEach.call(document.querySelectorAll(".flip"),function(b){b.onclick=function(){b.classList.toggle("open");b.querySelector("span").classList.toggle("hidden")}});
+/* certificado */
+$("mk").onclick=function(){var n=$("nome").value.trim(),all=[].every.call(document.querySelectorAll("#prom input"),function(x){return x.checked});
+if(!n){$("nome").focus();return}if(!all){alert("Marque todos os combinados para receber o certificado!");return}
+$("cn").textContent=n;$("cert").classList.remove("hidden");$("cert").scrollIntoView({behavior:"smooth",block:"center"})};
+</script>
+</body>
+</html>
