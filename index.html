@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Detetives da Informação: Caso Aberto</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&family=Nunito:wght@500;700&display=swap">
+<style>
+:root{--bg:#eaf1fb;--card:#fff;--ink:#1b2a4e;--mute:#55627f;--line:#c9d6ec;--gold:#ffc93c;--gold-ink:#1b2a4e;--ok:#14876f;--okbg:#d8f3ec;--warn:#a85d00;--warnbg:#ffecc7;--bad:#c4372a;--badbg:#ffdcd6;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#111a33;--card:#1a2646;--ink:#eef2fc;--mute:#a7b3d1;--line:#32426b;--okbg:#10372f;--warnbg:#3d2c0a;--badbg:#451c18;--ok:#5fd6b8;--warn:#ffc363;--bad:#ff8f80;color-scheme:dark}}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font:500 18px/1.5 Nunito,system-ui,sans-serif}
+h1,h2,h3,.btn{font-family:Fredoka,system-ui,sans-serif}
+main{max-width:640px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:2.3rem;line-height:1.1;margin:.2em 0 .3em}
+h2{font-size:1.5rem;line-height:1.25;margin:0 0 .4em}
+p{margin:.4em 0}
+.lens{font-size:4rem;display:block;animation:swing 1.4s ease-in-out 1}
+@keyframes swing{0%{transform:rotate(-25deg) scale(.6);opacity:0}60%{transform:rotate(12deg)}100%{transform:none;opacity:1}}
+.card{background:var(--card);border:2px solid var(--line);border-radius:20px;padding:20px;margin:14px 0}
+.btn{font-size:1.1rem;font-weight:700;border:0;border-radius:14px;padding:12px 20px;cursor:pointer;background:var(--gold);color:var(--gold-ink);min-height:48px}
+.btn:hover{filter:brightness(1.06)}
+:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+.top{display:flex;justify-content:space-between;align-items:center;font-family:Fredoka,sans-serif;font-weight:700}
+.bar{height:10px;background:var(--line);border-radius:6px;margin:8px 0 4px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--gold);width:0;transition:width .4s}
+.tag{display:inline-block;background:var(--ink);color:var(--bg);border-radius:10px;padding:2px 10px;font-size:.85rem;font-family:Fredoka,sans-serif}
+.story{font-size:1.15rem}
+.clues{display:grid;gap:8px;margin:14px 0}
+.clue{text-align:left;font:inherit;color:inherit;background:transparent;border:2px dashed var(--mute);border-radius:12px;padding:10px 14px;cursor:pointer;min-height:48px}
+.clue.open{border-style:solid;border-color:var(--gold);background:color-mix(in srgb,var(--gold) 18%,transparent)}
+.verdicts{display:grid;gap:10px;margin-top:6px}
+.v{font-family:Fredoka,sans-serif;font-weight:700;font-size:1.1rem;border:3px solid;border-radius:14px;padding:12px;cursor:pointer;min-height:52px;background:var(--card)}
+.v.ok{border-color:var(--ok);color:var(--ok)}.v.warn{border-color:var(--warn);color:var(--warn)}.v.bad{border-color:var(--bad);color:var(--bad)}
+.v:disabled{cursor:default;opacity:.45}.v.pick{opacity:1;color:#fff}
+.v.ok.pick{background:var(--ok)}.v.warn.pick{background:var(--warn)}.v.bad.pick{background:var(--bad)}
+.fb{border-radius:14px;padding:14px;margin-top:14px}
+.fb.right{background:var(--okbg)}.fb.wrong{background:var(--badbg)}
+.fb b{font-family:Fredoka,sans-serif;font-size:1.2rem}
+.hidden{display:none}
+.rank{font-size:3.5rem;display:block}
+.big{font-family:Fredoka,sans-serif;font-size:2.6rem;font-weight:700}
+@media (min-width:560px){.verdicts{grid-template-columns:repeat(3,1fr)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main>
+<section id="intro">
+  <span class="lens" aria-hidden="true">🔍</span>
+  <h1>Detetives da Informação: Caso Aberto</h1>
+  <div class="card">
+    <p>Você é um detetive digital. Cada caso traz uma situação da internet.</p>
+    <p><b>1.</b> Leia o caso. <b>2.</b> Abra as pistas. <b>3.</b> Dê o veredito: <b>Tudo certo</b>, <b>Atenção</b> ou <b>Perigo</b>.</p>
+    <p>Acertou? Ganha 10 pontos. Abrir todas as pistas antes de decidir vale +5.</p>
+  </div>
+  <button class="btn" id="start">Abrir os casos</button>
+</section>
+
+<section id="play" class="hidden" aria-live="polite">
+  <div class="top"><span id="num"></span><span id="score"></span></div>
+  <div class="bar"><i id="prog"></i></div>
+  <div class="card">
+    <span class="tag" id="topic"></span>
+    <h2 id="title"></h2>
+    <p class="story" id="story"></p>
+    <div class="clues" id="clues"></div>
+    <h3 style="margin:.6em 0 .3em">Qual é o seu veredito?</h3>
+    <div class="verdicts" id="verdicts">
+      <button class="v ok" data-v="ok">✅ Tudo certo</button>
+      <button class="v warn" data-v="warn">⚠️ Atenção</button>
+      <button class="v bad" data-v="bad">🚫 Perigo</button>
+    </div>
+    <div class="fb hidden" id="fb"></div>
+  </div>
+  <button class="btn hidden" id="next">Próximo caso</button>
+</section>
+
+<section id="end" class="hidden">
+  <div class="card" style="text-align:center">
+    <span class="rank" id="rankIcon" aria-hidden="true"></span>
+    <h2 id="rankName"></h2>
+    <div class="big" id="final"></div>
+    <p id="rankMsg"></p>
+  </div>
+  <div class="card"><h3 style="margin-top:0">Para levar da missão</h3>
+    <p>Antes de confiar: <b>quem fez</b>, <b>quando</b> e <b>o que dizem outras fontes</b>. Antes de compartilhar: <b>pergunte</b> a quem aparece na foto. Na dúvida, <b>converse com um adulto de confiança</b>.</p>
+  </div>
+  <button class="btn" id="again">Jogar de novo</button>
+</section>
+</main>
+<script>
+var CASES=[
+{t:"Jogos",h:"A data de nascimento do Roblox",s:"Você quer entrar num jogo com chat e ele pede sua data de nascimento. Um colega diz: “Coloca 2000, ninguém confere!”",a:"bad",c:["O jogo separa conteúdos por faixa de idade para proteger crianças.","Mentir a idade libera chats e conteúdos pensados para adultos.","No Brasil, leis recentes cobram que as plataformas protejam crianças e adolescentes."],e:"Mentir a idade tira as proteções feitas para a sua idade. Peça a um responsável para criar a conta com você."},
+{t:"Fontes",h:"O site dos planetas",s:"Para o trabalho de Ciências você achou um site com “10 segredos que a escola esconde sobre os planetas”.",a:"warn",c:["Não tem nome de autor nem data.","A página tem muitos anúncios piscando.","Nenhum outro site confirma esses “segredos”."],e:"Sem autor, sem data e sem outras fontes, não dá para confiar. Compare com livros, museus ou sites de ciência."},
+{t:"Fontes",h:"A página da agência espacial",s:"Outro site sobre planetas é de uma agência espacial.",a:"ok",c:["Tem o nome da instituição e a data da atualização.","Mostra de onde vieram as imagens e os dados.","Outros sites e livros dizem a mesma coisa."],e:"Autor claro, data e confirmação em outras fontes: é um bom sinal. Mesmo assim, anote de onde tirou a informação."},
+{t:"WhatsApp",h:"O grupo que apareceu do nada",s:"Alguém que você não conhece adicionou você num grupo com 200 pessoas. Estão pedindo fotos de todo mundo.",a:"bad",c:["Você não conhece a maioria dos membros.","Ninguém perguntou se você queria entrar.","Uma foto enviada pode ser salva e repassada por qualquer um."],e:"Saia do grupo, não envie foto e avise um adulto. Fotos que saem do seu celular ficam fora do seu controle."},
+{t:"Privacidade",h:"A foto sem permissão",s:"Seu colega tirou uma foto sua fazendo careta e postou no Instagram sem avisar.",a:"bad",c:["Você não autorizou a postagem.","Quem vê a foto pode salvar, comentar e repassar.","Pedir para apagar é um direito seu, e um adulto pode ajudar."],e:"Foto de alguém só se posta com a permissão da pessoa. Peça para apagar e, se não resolver, chame um adulto."},
+{t:"Golpe",h:"Robux grátis",s:"Chegou uma mensagem: “Ganhe 1000 Robux! Clique aqui e digite seu usuário e sua senha.”",a:"bad",c:["O link não é do site oficial do jogo.","Promete muito e pede senha.","Mensagens com pressa e prêmio fácil são marca de golpe."],e:"Isso é golpe para roubar contas. Nunca digite senha em link recebido. Apague e avise um adulto."},
+{t:"Classificação",h:"O filme de 16 anos",s:"Você tem 10 anos e o YouTube sugeriu o trailer de uma série com classificação 16 anos.",a:"warn",c:["A classificação indicativa avisa o que há de violência, medo e outros temas.","Conteúdo para mais velhos pode assustar ou confundir.","Responsáveis podem escolher algo adequado e assistir junto."],e:"A classificação existe para proteger você. Peça sugestões de algo para a sua idade, e assistam juntos."},
+{t:"IA",h:"O trabalho pronto",s:"Você pede para uma IA: “Faça meu trabalho de História inteiro” e vai copiar sem ler.",a:"warn",c:["A IA pode errar e inventar informações.","Você não aprende o assunto se só copia.","Gerar respostas gasta energia e água dos servidores."],e:"A IA é ajudante, não substituta. Use para dar ideias e explicar, e confira tudo em fontes confiáveis."},
+{t:"IA",h:"A explicação da fração",s:"Você não entendeu frações. Pede a uma IA para explicar de outro jeito, depois confere no livro e tenta sozinho.",a:"ok",c:["Você usou a IA para aprender, não para copiar.","Conferiu a resposta em outra fonte.","Fez o exercício com as próprias mãos."],e:"Esse é o bom uso: perguntar, conferir e praticar. Quem pensa junto com a IA aprende mais."},
+{t:"Senhas",h:"A senha do jogo",s:"Você cria a senha “eu-amo-pizza-de-calabresa-7” e só conta para seu responsável.",a:"ok",c:["É longa e difícil de adivinhar.","Não usa nome, aniversário nem número do celular.","Só quem cuida de você sabe a senha."],e:"Frases longas são senhas fortes. Melhor ainda: uma senha diferente para cada conta."},
+{t:"Chat",h:"O amigo novo do jogo",s:"No chat de um jogo, um “amigo” de 11 anos pergunta em qual escola você estuda e onde mora.",a:"bad",c:["Você nunca viu essa pessoa fora do jogo.","Qualquer um pode fingir ser criança na internet.","Endereço e escola ajudam a encontrar você."],e:"Nunca conte onde mora ou estuda para quem só conhece online. Bloqueie e conte para um adulto."},
+{t:"Notícias",h:"O vídeo “urgente”",s:"Um vídeo diz em letras gigantes: “COMPARTILHE ANTES QUE APAGUEM!” e afirma que a escola vai fechar amanhã.",a:"warn",c:["Usa pressa e medo para você repassar.","Não mostra quem produziu o vídeo.","O site da escola e a prefeitura não falam nada sobre isso."],e:"Pressa e medo são táticas de notícia falsa. Pesquise em sites oficiais antes de repassar."},
+{t:"Família",h:"Combinado com os responsáveis",s:"Antes de entrar num grupo novo e baixar um jogo, você mostra para seu responsável e combinam regras juntos.",a:"ok",c:["Um adulto pode ver riscos que você ainda não percebeu.","As regras valem para o tempo e para os contatos.","Você pode pedir ajuda se algo der errado."],e:"Combinar antes evita problemas depois. Quem tem apoio resolve as confusões mais rápido."}
+];
+var NAMES={ok:"✅ Tudo certo",warn:"⚠️ Atenção",bad:"🚫 Perigo"};
+var RANKS=[[0,"🐣","Detetive aprendiz","Todo grande detetive começou assim. Jogue de novo e abra todas as pistas!"],[60,"🕵️","Detetive esperto","Você já enxerga muita coisa. Falta pouco para a patente máxima."],[100,"🔎","Detetive expert","Ótimo faro! Você investiga antes de confiar."],[135,"🏆","Detetive lendário","Caso encerrado com louvor! Ensine seus colegas a investigar também."]];
+var q,i,score,answered,opened,$=function(x){return document.getElementById(x)};
+function shuffle(a){a=a.slice();for(var n=a.length-1;n>0;n--){var k=Math.floor(Math.random()*(n+1));var t=a[n];a[n]=a[k];a[k]=t}return a}
+function show(id){["intro","play","end"].forEach(function(s){$(s).classList.toggle("hidden",s!==id)});window.scrollTo(0,0)}
+function start(){q=shuffle(CASES).slice(0,10);i=0;score=0;show("play");load()}
+function load(){var c=q[i];answered=false;opened=0;
+$("num").textContent="Caso "+(i+1)+" de "+q.length;$("score").textContent="⭐ "+score;
+$("prog").style.width=(i/q.length*100)+"%";
+$("topic").textContent=c.t;$("title").textContent=c.h;$("story").textContent=c.s;
+var cl=$("clues");cl.innerHTML="";
+c.c.forEach(function(p,n){var b=document.createElement("button");b.className="clue";b.textContent="🔍 Pista "+(n+1)+": toque para revelar";
+b.onclick=function(){if(!b.classList.contains("open")){b.classList.add("open");b.textContent="🔍 "+p;opened++}};cl.appendChild(b)});
+var vs=document.querySelectorAll(".v");for(var n=0;n<vs.length;n++){vs[n].disabled=false;vs[n].classList.remove("pick")}
+$("fb").classList.add("hidden");$("next").classList.add("hidden")}
+function verdict(v,btn){if(answered)return;answered=true;var c=q[i],right=v===c.a,bonus=right&&opened===c.c.length;
+if(right)score+=10+(bonus?5:0);
+var vs=document.querySelectorAll(".v");for(var n=0;n<vs.length;n++){vs[n].disabled=true}btn.classList.add("pick");
+var f=$("fb");f.className="fb "+(right?"right":"wrong");
+f.innerHTML="<b>"+(right?"Isso! +"+(bonus?15:10)+" pontos"+(bonus?" (bônus das pistas)":""):"Quase! O veredito certo era "+NAMES[c.a])+"</b><p></p>";
+f.lastChild.textContent=c.e;
+$("score").textContent="⭐ "+score;$("prog").style.width=((i+1)/q.length*100)+"%";
+var nx=$("next");nx.textContent=i===q.length-1?"Ver minha patente":"Próximo caso";nx.classList.remove("hidden");nx.focus()}
+function finish(){var r=RANKS[0];RANKS.forEach(function(x){if(score>=x[0])r=x});
+$("rankIcon").textContent=r[1];$("rankName").textContent=r[2];$("final").textContent=score+" pontos";$("rankMsg").textContent=r[3];show("end")}
+$("start").onclick=start;$("again").onclick=start;
+$("next").onclick=function(){i++;if(i>=q.length)finish();else load()};
+var vb=document.querySelectorAll(".v");for(var n=0;n<vb.length;n++){(function(b){b.onclick=function(){verdict(b.getAttribute("data-v"),b)}})(vb[n])}
+</script>
+</body>
+</html>
